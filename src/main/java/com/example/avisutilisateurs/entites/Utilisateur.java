@@ -54,7 +54,7 @@ public class Utilisateur implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return this.actif;
     }
 
     @Override

@@ -1,0 +1,12 @@
+###
+POST http://localhost:9191/api/code
+Content-Type: application/json
+
+{
+  "code": "biteb@gmail.com",
+  "password": "Password"
+}
+
+<> 2023-11-08T100945.400.html
+
+###

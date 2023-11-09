@@ -9,7 +9,11 @@ import com.example.avisutilisateurs.service.NotificationService;
 import com.example.avisutilisateurs.service.TypeDeRole;
 import com.example.avisutilisateurs.service.ValidationService;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +24,10 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class UtilisateurService {
+public class UtilisateurService implements UserDetailsService {
     private UtilisateurRepository utilisateurRepository;
-    private BCryptPasswordEncoder passwordEncoder;
     private ValidationService validationService;
-
+    private BCryptPasswordEncoder passwordEncoder;
     public void inscription(Utilisateur utilisateur) {
         if (!utilisateur.getEmail().contains("@")) {
             throw new RuntimeException("votre mail est invalide");
@@ -58,6 +61,11 @@ public class UtilisateurService {
         Utilisateur UtilsateurActiver = this.utilisateurRepository.findById((validation.getUtilisateur().getId())).orElseThrow(() -> new RuntimeException("utilisateur inconu"));
         UtilsateurActiver.setActif(true);
         this.utilisateurRepository.save(UtilsateurActiver);
+    }
+
+    @Override
+    public Utilisateur loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.utilisateurRepository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("Aucun user ne correspond cet identifiant"));
     }
 }
 
